@@ -5,15 +5,16 @@ import { auth } from "../middleware/middleware";
 
 const webRouter = Router();
 
-webRouter.post('/register-website',auth, async(req: Request, res: Response) => {
+webRouter.post('/register-website', auth, async(req: Request, res: Response) => {
   try {
     const { url } = req.body;
 
     if (!url || typeof url !== "string" || !url.startsWith("http")) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Enter a valid URL",
       });
+      return;
     }
 
     const web = await prisma.website.create({
@@ -24,7 +25,7 @@ webRouter.post('/register-website',auth, async(req: Request, res: Response) => {
       }
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: "Website registered",
       website: {
@@ -35,14 +36,14 @@ webRouter.post('/register-website',auth, async(req: Request, res: Response) => {
     });
   } catch (error) {
     console.log("error while registering website", error);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Server error",
     });
   }
 });
 
-webRouter.get('/website:id',auth, async(req, res) => {
+webRouter.get('/website/:id', auth, async(req, res) => {
     try {
         const { id } = req.body;
         const website = prisma.website.findUnique({
