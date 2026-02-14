@@ -13,7 +13,9 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "bcrypt": "^6.0.0",
     "express": "^5.2.1",
-    "@repo/db": "workspace:*"
+    "jsonwebtoken": "^9.0.3"
   }
 }

@@ -19,8 +19,8 @@ model User {
 model Website {
   id         String @id @default(uuid())
   url        String @unique
-  user       String
-  userId      User @relation(fields: [user], references: [id])
+  userId       String
+  user      User @relation(fields: [userId], references: [id])
   timestamp  DateTime
   tick       WebsiteTick[]
 }
@@ -34,10 +34,10 @@ model Region {
 model WebsiteTick {
   id         String @id @default(uuid())
   status     WebsiteStatus
-  website     String
-  websiteId  Website @relation(fields: [website], references: [id])
-  region     String
-  regionId   Region @relation(fields: [region], references: [id])
+  websiteId     String
+  website  Website @relation(fields: [websiteId], references: [id])
+  regionId     String
+  region   Region @relation(fields: [regionId], references: [id])
   timestamp  DateTime @default(now())
 }
 
