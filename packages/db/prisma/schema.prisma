@@ -9,9 +9,18 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        String @id @default(uuid())
+  username  String @unique
+  password  String
+  website   Website[]
+}
+
 model Website {
   id         String @id @default(uuid())
   url        String @unique
+  user       String
+  userId      User @relation(fields: [user], references: [id])
   timestamp  DateTime
   tick       WebsiteTick[]
 }
@@ -29,6 +38,7 @@ model WebsiteTick {
   websiteId  Website @relation(fields: [website], references: [id])
   region     String
   regionId   Region @relation(fields: [region], references: [id])
+  timestamp  DateTime @default(now())
 }
 
 enum WebsiteStatus {
