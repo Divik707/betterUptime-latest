@@ -45,7 +45,7 @@ webRouter.post('/register-website', auth, async(req: Request, res: Response) => 
 
 webRouter.get('/website/:id', auth, async(req, res) => {
     try {
-        const { id } = req.body;
+        const { id } = req.params;
         const website = prisma.website.findUnique({
             where: { id }
         })

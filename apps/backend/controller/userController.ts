@@ -20,6 +20,7 @@ userRouter.post('/user-signup', async(req, res) => {
                 username
         }) 
     } catch (error) {
+        console.log(error)
         res.json({
             message: error
         })
