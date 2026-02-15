@@ -1,135 +1,199 @@
-# Turborepo starter
+BetterStack – Uptime Monitoring System
 
-This Turborepo starter is maintained by the Turborepo core team.
+BetterStack is a monorepo-based uptime monitoring system that checks whether registered websites are UP or DOWN in real time.
 
-## Using this example
+It continuously monitors websites, stores their status, and enables scalable health-check infrastructure using workers and Redis.
 
-Run the following command:
+🏗️ Monorepo Architecture
 
-```sh
-npx create-turbo@latest
-```
+This project uses Turborepo to manage multiple apps and shared packages inside a single repository.
 
-## What's inside?
+betterStack/
+│
+├── apps/
+│   ├── backend/      → Main API server
+│   ├── web/          → Frontend dashboard
+│   ├── pusher/       → Background worker for health checks
+│   └── docs/         → Documentation
+│
+├── packages/
+│   ├── db/                 → Database client & schema
+│   ├── redis/              → Redis connection setup
+│   ├── ui/                 → Shared UI components
+│   ├── eslint-config/      → Shared ESLint config
+│   └── typescript-config/  → Shared TS configs
+│
+├── tests/           → Integration / unit tests
+├── turbo.json       → Turborepo configuration
+├── bun.lock         → Bun lockfile
+└── package.json     → Root workspace config
 
-This Turborepo includes the following packages/apps:
+🧠 System Overview
+🔹 Backend (apps/backend)
 
-### Apps and Packages
+Handles user authentication
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Allows registering websites
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Stores website data in database
 
-### Utilities
+Exposes REST APIs
 
-This Turborepo has some additional tools already setup for you:
+🔹 Pusher (apps/pusher)
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Background worker service
 
-### Build
+Periodically checks website health
 
-To build all apps and packages, run the following command:
+Updates status in DB
 
-```
-cd my-turborepo
+Uses Redis for queueing / caching
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+🔹 Web (apps/web)
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+Dashboard UI
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Shows website status (UP/DOWN)
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Displays monitoring history
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+🔹 Shared Packages
 
-### Develop
+db → Prisma / DB config
 
-To develop all apps and packages, run the following command:
+redis → Redis client setup
 
-```
-cd my-turborepo
+ui → Shared frontend components
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+eslint-config → Centralized lint rules
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+typescript-config → Shared TS configs
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+⚙️ Tech Stack
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+Runtime: Bun / Node.js
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Monorepo: Turborepo
 
-### Remote Caching
+Backend: Express / Fastify
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Database: PostgreSQL / MongoDB
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Cache / Queue: Redis
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+Frontend: React / Next.js
 
-```
-cd my-turborepo
+Language: TypeScript
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+🔄 How Monitoring Works
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+User registers a website via backend.
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Website is stored in database.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+pusher worker runs at fixed intervals.
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+Worker sends HTTP request to each registered website.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+If response is 2xx → Marked UP
 
-## Useful Links
+If timeout / error → Marked DOWN
 
-Learn more about the power of Turborepo:
+Status logs stored for analytics.
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+🚀 Getting Started
+1️⃣ Install dependencies
+bun install
+
+
+or
+
+npm install
+
+2️⃣ Run Development
+Run all apps
+bun run dev
+
+
+or with turbo:
+
+npx turbo run dev
+
+Run individual apps
+
+Backend:
+
+bun run --filter=backend dev
+
+
+Web:
+
+bun run --filter=web dev
+
+
+Pusher (worker):
+
+bun run --filter=pusher dev
+
+🔐 Environment Variables
+
+Create .env files inside relevant apps.
+
+Example (apps/backend/.env):
+
+PORT=5000
+DATABASE_URL=your_database_url
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your_secret
+CHECK_INTERVAL=60000
+
+📡 Example API Routes
+POST   /api/websites        → Register website
+GET    /api/websites        → List all websites
+GET    /api/websites/:id    → Get website status
+DELETE /api/websites/:id    → Remove website
+
+📊 Future Improvements
+
+📧 Email alerts when site goes down
+
+📈 Uptime percentage calculation
+
+🌍 Multi-region health checks
+
+🐳 Docker support
+
+📊 Real-time updates via WebSockets
+
+🔔 Slack / Discord integrations
+
+🎯 Learning Goals
+
+This project demonstrates:
+
+Monorepo architecture
+
+Background job processing
+
+Worker services
+
+Redis-based queue systems
+
+Scalable system design
+
+Full-stack TypeScript development
+
+🧪 Testing
+
+Run tests from root:
+
+bun test
+
+
+or
+
+npm test
+
+📜 License
+
+MIT License
